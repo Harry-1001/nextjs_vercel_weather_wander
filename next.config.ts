@@ -1,12 +1,11 @@
 // next.config.ts
-// next.config.ts
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   reactStrictMode: true,
   experimental: {
-    esmExternals: true,  // ESMの外部モジュールを有効にする設定
+    appDir: true,  // App Router を有効化
   },
 };
 
 export default nextConfig;
+
