@@ -40,7 +40,7 @@ export default function WeatherPage() {
   return (
     <div className="h-screen flex items-center justify-center w-full">
       <div className="p-6 max-w-md mx-auto bg-white shadow-md rounded-md">
-        <h1 className="text-4xl mb-4 text-center"> 都市名 in English</h1>
+        <h1 className="text-2xl mb-4 text-center"> 都市名 in English</h1>
         <input
           type="text"
           placeholder="都市名を入力 (例: Tokyo)"
