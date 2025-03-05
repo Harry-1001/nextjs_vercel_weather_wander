@@ -21,11 +21,15 @@ export default function WeatherPage() {
 
     // 天気に応じた背景を設定
     if (weather.description.includes("晴れ")) {
-      setBgClass("from-yellow-300 to-orange-500"); // 晴れ → 黄・オレンジ
+      setBgClass("from-yellow-300 to-orange-500 animate-sunshine"); // 晴れ → 黄・オレンジ
     } else if (weather.description.includes("雨")) {
-      setBgClass("from-gray-500 to-blue-900"); // 雨 → グレー・青
+      setBgClass("from-gray-500 to-blue-900 animate-rainy"); // 雨 → グレー・青
     } else if (weather.description.includes("曇")) {
-      setBgClass("from-gray-300 to-gray-600"); // 曇り → ライトグレー・ダークグレー
+      setBgClass("from-gray-300 to-gray-600 animate-cloudy"); // 曇り → ライトグレー・ダークグレー
+    } else if (weather.description.includes("雲")) {
+        setBgClass("from-gray-300 to-gray-600 animate-cloudy"); // 曇り → ライトグレー・ダークグレー
+    } else if (weather.description.includes("雪")) {
+        setBgClass("from-white to-gray-300 animate-snowy"); // 雪 → 白・グレー + アニメーション
     } else {
       setBgClass("from-blue-300 to-blue-500"); // デフォルト
     }
