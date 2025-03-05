@@ -1,6 +1,6 @@
+// app/weather.page.tsx
 "use client";
 import { useState, useEffect } from "react";
-import clsx from "clsx";
 
 export default function WeatherPage() {
   const [city, setCity] = useState("");
@@ -54,8 +54,9 @@ export default function WeatherPage() {
     }
   };
 
+  // bgClass を直接クラス名として使用
   return (
-    <div className={clsx("h-screen w-full flex items-center justify-center transition-all duration-500 bg-gradient-to-b", bgClass)}>
+    <div className={`h-screen w-full flex items-center justify-center transition-all duration-500 bg-gradient-to-b ${bgClass}`}>
       <div className="p-6 max-w-md mx-auto bg-white shadow-md rounded-md">
         <h1 className="text-2xl text-gray-700 mb-4 text-center">都市名 in English</h1>
         <input
@@ -95,11 +96,9 @@ export default function WeatherPage() {
 }
 
 const getWeatherIcon = (description: string) => {
-  if (description.includes("晴")) return "☀️";
+  if (description.includes("晴れ")) return "☀️";
   if (description.includes("雨")) return "🌧";
   if (description.includes("曇")) return "☁️";
   if (description.includes("雪")) return "⛄️";
   return "🌍";
 };
-
-
