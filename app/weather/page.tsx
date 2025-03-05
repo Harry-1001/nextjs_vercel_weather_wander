@@ -3,6 +3,10 @@
 import { useState, useEffect } from "react";
 import clsx from "clsx";
 
+// Prevent Tailwind from purging these classes
+const unusedClasses = "animate-sunny animate-rainy animate-cloudy animate-snowy";
+
+
 export default function WeatherPage() {
   const [city, setCity] = useState("");
   const [weather, setWeather] = useState<any>(null);
@@ -37,6 +41,7 @@ export default function WeatherPage() {
       newAnimationClass = "animate-cloudy";
     }
 
+    console.log("Applied animation:", newAnimationClass);
     setBgClass(newBgClass);
     setAnimationClass(newAnimationClass);
   }, [weather]);
