@@ -1,13 +1,15 @@
 // app/weather.page.tsx
 "use client";
 import { useState, useEffect } from "react";
+import clsx from "clsx";
 
 export default function WeatherPage() {
   const [city, setCity] = useState("");
   const [weather, setWeather] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [bgClass, setBgClass] = useState("bg-gradient-to-b from-blue-300 to-blue-500");
+  const [bgClass, setBgClass] = useState("from-blue-300 to-blue-500");
+  const [animationClass, setAnimationClass] = useState("");
 
   useEffect(() => {
     const savedCity = localStorage.getItem("lastCity");
@@ -19,25 +21,24 @@ export default function WeatherPage() {
   useEffect(() => {
     if (!weather) return;
 
-    let newBgClass = "bg-gradient-to-b from-blue-300 to-blue-500"; // デフォルト
-    let animationClass = "";
+    // Reset animation and background classes
+    let newBgClass = "from-blue-300 to-blue-500";
+    let newAnimationClass = "";
 
-    if (weather.description.includes("晴")) {
-      newBgClass = "bg-gradient-to-b from-yellow-300 to-orange-500";
-      animationClass = "animate-sunny";
+    // Set background and animation based on weather description
+    if (weather.description.includes("晴れ")) {
+      newBgClass = "from-yellow-300 to-orange-500";
+      newAnimationClass = "animate-sunny";
     } else if (weather.description.includes("雨")) {
-      newBgClass = "bg-gradient-to-b from-gray-500 to-blue-900";
-      animationClass = "animate-rainy";
-    } else if (weather.description.includes("曇") || weather.description.includes("雲")) {
-      newBgClass = "bg-gradient-to-b from-gray-300 to-gray-600";
-      animationClass = "animate-cloudy";
-    } else if (weather.description.includes("雪")) {
-      newBgClass = "bg-gradient-to-b from-white to-gray-300";
-      animationClass = "animate-snowy";
+      newBgClass = "from-gray-500 to-blue-900";
+      newAnimationClass = "animate-rainy";
+    } else if (weather.description.includes("曇")) {
+      newBgClass = "from-gray-300 to-gray-600";
+      newAnimationClass = "animate-cloudy";
     }
 
-    // Combine background gradient and animation classes
-    setBgClass(`${newBgClass} ${animationClass} animate-background`);
+    setBgClass(newBgClass);
+    setAnimationClass(newAnimationClass);
   }, [weather]);
 
   const fetchWeather = async () => {
@@ -62,8 +63,15 @@ export default function WeatherPage() {
       setLoading(false);
     }
   };
-    return (
-    <div className={`h-screen w-full flex items-center justify-center transition-all duration-500 ${bgClass}`}>
+
+  return (
+    <div 
+      className={clsx(
+        "h-screen w-full flex items-center justify-center transition-all duration-500 bg-gradient-to-b", 
+        bgClass, 
+        animationClass
+      )}
+    >
       <div className="p-6 max-w-md mx-auto bg-white shadow-md rounded-md">
         <h1 className="text-2xl text-gray-700 mb-4 text-center">都市名 in English</h1>
         <input
@@ -103,10 +111,8 @@ export default function WeatherPage() {
 }
 
 const getWeatherIcon = (description: string) => {
-  if (description.includes("晴")) return "☀️";
+  if (description.includes("晴れ")) return "☀️";
   if (description.includes("雨")) return "🌧";
   if (description.includes("曇") || description.includes("雲")) return "☁️";
-  if (description.includes("雪")) return "⛄️";
   return "🌍";
 };
-
