@@ -46,6 +46,9 @@ export default function WeatherPage() {
           placeholder="都市名を入力 (例: Tokyo)"
           value={city}
           onChange={(e) => setCity(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") fetchWeather(); // Enterキーで検索
+          }}
           className="text-2xl border p-2 rounded w-full"
         />
         <button 
@@ -76,6 +79,6 @@ const getWeatherIcon = (description: string) => {
   if (description.includes("晴れ")) return "☀️";
   if (description.includes("雨")) return "🌧";
   if (description.includes("曇")) return "☁️";
-  if (description.includes("雪")) return "⛄️";
   return "🌍";
 };
+
