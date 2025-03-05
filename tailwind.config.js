@@ -8,31 +8,30 @@ module.exports = {
   theme: {
     extend: {
       animation: {
-        sunny: 'sunshine 3s ease-in-out infinite',
-        rainy: 'rainy 3s ease-in-out infinite',
-        cloudy: 'cloudy 3s ease-in-out infinite',
-        snowy: 'snowy 3s ease-in-out infinite',
+        sunny: "sunshine 3s infinite alternate ease-in-out",
+        rainy: "rainy 3s infinite alternate ease-in-out",
+        cloudy: "cloudy 3s infinite alternate ease-in-out",
+        snowy: "snowy 3s infinite alternate ease-in-out",
       },
       keyframes: {
         sunshine: {
-          '0%': { backgroundColor: '#FFEB3B' }, // 黄色
-          '100%': { backgroundColor: '#FF9800' }, // オレンジ
+          "0%": { backgroundColor: "#FFEB3B" },
+          "100%": { backgroundColor: "#FF9800" },
         },
         rainy: {
-          '0%': { backgroundColor: '#607d8b' }, // グレー
-          '100%': { backgroundColor: '#1a237e' }, // 濃い青
+          "0%": { backgroundColor: "#607d8b" },
+          "100%": { backgroundColor: "#1a237e" },
         },
         cloudy: {
-          '0%': { backgroundColor: '#bdbdbd' }, // ライトグレー
-          '100%': { backgroundColor: '#424242' }, // ダークグレー
+          "0%": { backgroundColor: "#bdbdbd" },
+          "100%": { backgroundColor: "#424242" },
         },
         snowy: {
-          '0%': { backgroundColor: '#ffffff' }, // 白
-          '100%': { backgroundColor: '#cfd8dc' }, // 灰色
+          "0%": { backgroundColor: "#ffffff" },
+          "100%": { backgroundColor: "#cfd8dc" },
         },
       },
     },
   },
   plugins: [],
-}
-
+};

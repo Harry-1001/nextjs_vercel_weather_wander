@@ -19,20 +19,24 @@ export default function WeatherPage() {
   useEffect(() => {
     if (!weather) return;
 
-    // 天気に応じた背景を設定
-    if (weather.description.includes("晴れ")) {
-      setBgClass("from-yellow-300 to-orange-500 animate-sunshine"); // 晴れ → 黄・オレンジ
+    let newBgClass = "from-blue-300 to-blue-500"; // デフォルト
+    let animationClass = "";
+
+    if (weather.description.includes("晴")) {
+      newBgClass = "from-yellow-300 to-orange-500";
+      animationClass = "animate-sunny";
     } else if (weather.description.includes("雨")) {
-      setBgClass("from-gray-500 to-blue-900 animate-rainy"); // 雨 → グレー・青
-    } else if (weather.description.includes("曇")) {
-      setBgClass("from-gray-300 to-gray-600 animate-cloudy"); // 曇り → ライトグレー・ダークグレー
-    } else if (weather.description.includes("雲")) {
-        setBgClass("from-gray-300 to-gray-600 animate-cloudy"); // 曇り → ライトグレー・ダークグレー
+      newBgClass = "from-gray-500 to-blue-900";
+      animationClass = "animate-rainy";
+    } else if (weather.description.includes("曇") || weather.description.includes("雲")) {
+      newBgClass = "from-gray-300 to-gray-600";
+      animationClass = "animate-cloudy";
     } else if (weather.description.includes("雪")) {
-        setBgClass("from-white to-gray-300 animate-snowy"); // 雪 → 白・グレー + アニメーション
-    } else {
-      setBgClass("from-blue-300 to-blue-500"); // デフォルト
+      newBgClass = "from-white to-gray-300";
+      animationClass = "animate-snowy";
     }
+
+    setBgClass(`${newBgClass} ${animationClass}`);
   }, [weather]);
 
   const fetchWeather = async () => {
@@ -58,7 +62,6 @@ export default function WeatherPage() {
     }
   };
 
-  // bgClass を直接クラス名として使用
   return (
     <div className={`h-screen w-full flex items-center justify-center transition-all duration-500 bg-gradient-to-b ${bgClass}`}>
       <div className="p-6 max-w-md mx-auto bg-white shadow-md rounded-md">
@@ -102,8 +105,8 @@ export default function WeatherPage() {
 const getWeatherIcon = (description: string) => {
   if (description.includes("晴")) return "☀️";
   if (description.includes("雨")) return "🌧";
-  if (description.includes("曇")) return "☁️";
-  if (description.includes("雲")) return "☁️";
+  if (description.includes("曇") || description.includes("雲")) return "☁️";
   if (description.includes("雪")) return "⛄️";
   return "🌍";
 };
+
