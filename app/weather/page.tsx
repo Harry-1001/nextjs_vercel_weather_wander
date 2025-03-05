@@ -7,7 +7,7 @@ export default function WeatherPage() {
   const [weather, setWeather] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [bgClass, setBgClass] = useState("from-blue-300 to-blue-500");
+  const [bgClass, setBgClass] = useState("bg-gradient-to-b from-blue-300 to-blue-500");
 
   useEffect(() => {
     const savedCity = localStorage.getItem("lastCity");
@@ -19,24 +19,25 @@ export default function WeatherPage() {
   useEffect(() => {
     if (!weather) return;
 
-    let newBgClass = "from-blue-300 to-blue-500"; // デフォルト
+    let newBgClass = "bg-gradient-to-b from-blue-300 to-blue-500"; // デフォルト
     let animationClass = "";
 
     if (weather.description.includes("晴")) {
-      newBgClass = "from-yellow-300 to-orange-500";
+      newBgClass = "bg-gradient-to-b from-yellow-300 to-orange-500";
       animationClass = "animate-sunny";
     } else if (weather.description.includes("雨")) {
-      newBgClass = "from-gray-500 to-blue-900";
+      newBgClass = "bg-gradient-to-b from-gray-500 to-blue-900";
       animationClass = "animate-rainy";
     } else if (weather.description.includes("曇") || weather.description.includes("雲")) {
-      newBgClass = "from-gray-300 to-gray-600";
+      newBgClass = "bg-gradient-to-b from-gray-300 to-gray-600";
       animationClass = "animate-cloudy";
     } else if (weather.description.includes("雪")) {
-      newBgClass = "from-white to-gray-300";
+      newBgClass = "bg-gradient-to-b from-white to-gray-300";
       animationClass = "animate-snowy";
     }
 
-    setBgClass(`${newBgClass} ${animationClass}`);
+    // Combine background gradient and animation classes
+    setBgClass(`${newBgClass} ${animationClass} animate-background`);
   }, [weather]);
 
   const fetchWeather = async () => {
@@ -61,9 +62,8 @@ export default function WeatherPage() {
       setLoading(false);
     }
   };
-
-  return (
-    <div className={`h-screen w-full flex items-center justify-center transition-all duration-500 bg-gradient-to-b ${bgClass}`}>
+    return (
+    <div className={`h-screen w-full flex items-center justify-center transition-all duration-500 ${bgClass}`}>
       <div className="p-6 max-w-md mx-auto bg-white shadow-md rounded-md">
         <h1 className="text-2xl text-gray-700 mb-4 text-center">都市名 in English</h1>
         <input

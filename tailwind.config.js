@@ -12,6 +12,7 @@ module.exports = {
         rainy: "rainy 3s infinite alternate ease-in-out",
         cloudy: "cloudy 3s infinite alternate ease-in-out",
         snowy: "snowy 3s infinite alternate ease-in-out",
+        background: "backgroundChange 5s ease infinite"
       },
       keyframes: {
         sunshine: {
@@ -30,6 +31,10 @@ module.exports = {
           "0%": { backgroundColor: "#ffffff" },
           "100%": { backgroundColor: "#cfd8dc" },
         },
+        backgroundChange: {
+          "0%, 100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" }
+        }
       },
     },
   },
