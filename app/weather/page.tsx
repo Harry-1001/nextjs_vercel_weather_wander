@@ -1,11 +1,10 @@
 // app/weather.page.tsx
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import clsx from "clsx";
 
 // Prevent Tailwind from purging these classes
 const unusedClasses = "animate-sunny animate-rainy animate-cloudy animate-snowy";
-
 
 export default function WeatherPage() {
   const [city, setCity] = useState("");
@@ -14,31 +13,34 @@ export default function WeatherPage() {
   const [error, setError] = useState("");
   const [bgClass, setBgClass] = useState("from-blue-300 to-blue-500");
   const [animationClass, setAnimationClass] = useState("");
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
 
   useEffect(() => {
     const savedCity = localStorage.getItem("lastCity");
-    if (savedCity) {
-      setCity(savedCity);
-    }
+    if (savedCity) setCity(savedCity);
   }, []);
 
   useEffect(() => {
     if (!weather) return;
 
-    // Reset animation and background classes
     let newBgClass = "from-blue-300 to-blue-500";
     let newAnimationClass = "";
 
-    // Set background and animation based on weather description
+    stopAnimation();
+
     if (weather.description.includes("晴れ")) {
       newBgClass = "from-yellow-300 to-orange-500";
       newAnimationClass = "animate-sunny";
+      startSunnyAnimation();
     } else if (weather.description.includes("雨")) {
       newBgClass = "from-gray-500 to-blue-900";
       newAnimationClass = "animate-rainy";
+      startRainAnimation();
     } else if (weather.description.includes("曇")) {
       newBgClass = "from-gray-300 to-gray-600";
       newAnimationClass = "animate-cloudy";
+      startCloudyAnimation();
     }
 
     console.log("Applied animation:", newAnimationClass);
@@ -69,55 +71,105 @@ export default function WeatherPage() {
     }
   };
 
+  /** ☀️ Start sunny animation */
+  const startSunnyAnimation = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let angle = 0;
+    const drawSun = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "yellow";
+      ctx.beginPath();
+      ctx.arc(canvas.width / 2, canvas.height / 2, 50, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.strokeStyle = "orange";
+      for (let i = 0; i < 8; i++) {
+        const x = Math.cos(angle + (i * Math.PI) / 4) * 70 + canvas.width / 2;
+        const y = Math.sin(angle + (i * Math.PI) / 4) * 70 + canvas.height / 2;
+        ctx.beginPath();
+        ctx.moveTo(canvas.width / 2, canvas.height / 2);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+      }
+
+      angle += 0.02;
+      animationFrameRef.current = requestAnimationFrame(drawSun);
+    };
+    drawSun();
+  };
+
+  /** 🌧 Start rain animation */
+  const startRainAnimation = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let raindrops = Array.from({ length: 100 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      speed: Math.random() * 4 + 2,
+      length: Math.random() * 10 + 5,
+    }));
+
+    const drawRain = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = "rgba(173, 216, 230, 0.6)";
+      ctx.lineWidth = 1.5;
+
+      raindrops.forEach((drop) => {
+        ctx.beginPath();
+        ctx.moveTo(drop.x, drop.y);
+        ctx.lineTo(drop.x, drop.y + drop.length);
+        ctx.stroke();
+
+        drop.y += drop.speed;
+        if (drop.y > canvas.height) {
+          drop.y = -drop.length;
+          drop.x = Math.random() * canvas.width;
+        }
+      });
+      animationFrameRef.current = requestAnimationFrame(drawRain);
+    };
+    drawRain();
+  };
+
+  /** ☁️ Start cloudy animation */
+  const startCloudyAnimation = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let cloudX = 0;
+    const drawCloud = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "lightgray";
+      ctx.beginPath();
+      ctx.arc(cloudX, 50, 40, 0, Math.PI * 2);
+      ctx.arc(cloudX + 40, 60, 50, 0, Math.PI * 2);
+      ctx.arc(cloudX + 80, 50, 40, 0, Math.PI * 2);
+      ctx.fill();
+      cloudX = (cloudX + 1) % canvas.width;
+      animationFrameRef.current = requestAnimationFrame(drawCloud);
+    };
+    drawCloud();
+  };
+
+  /** 🛑 Stop all animations */
+  const stopAnimation = () => {
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+    }
+  };
+
   return (
-    <div 
-      className={clsx(
-        "h-screen w-full flex items-center justify-center transition-all duration-500 bg-gradient-to-b", 
-        bgClass, 
-        animationClass
-      )}
-    >
-      <div className="p-6 max-w-md mx-auto bg-white shadow-md rounded-md">
-        <h1 className="text-2xl text-gray-700 mb-4 text-center">都市名 in English</h1>
-        <input
-          type="text"
-          placeholder="都市名を入力 (例: Tokyo)"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") fetchWeather();
-          }}
-          className="text-2xl border p-2 rounded w-full"
-        />
-        <button 
-          onClick={fetchWeather} 
-          disabled={loading}
-          className="mt-2 bg-blue-500 text-white text-lg py-3 px-6 rounded w-full hover:bg-blue-600"
-        >
-          {loading ? "取得中..." : "天気を取得"}
-        </button>
-
-        {error && <p className="text-red-500 text-center mt-2">{error}</p>}
-
-        {weather && (
-          <div className="mt-4 text-center">
-            <h2 className="text-2xl underline">{weather.name}の天気</h2>
-            <div className="text-lg">最高気温: {weather.temp_max}℃</div>
-            <div className="text-lg">最低気温: {weather.temp_min}℃</div>
-            <div className="text-lg">湿度: {weather.humidity}%</div>
-            <div className="text-lg">
-              天気: {weather.description} {getWeatherIcon(weather.description)}
-            </div>
-          </div>
-        )}
-      </div>
+    <div className={clsx("h-screen w-full flex items-center justify-center transition-all duration-500 bg-gradient-to-b", bgClass, animationClass)}>
+      <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full pointer-events-none" />
     </div>
   );
 }
-
-const getWeatherIcon = (description: string) => {
-  if (description.includes("晴れ")) return "☀️";
-  if (description.includes("雨")) return "🌧";
-  if (description.includes("曇") || description.includes("雲")) return "☁️";
-  return "🌍";
-};
