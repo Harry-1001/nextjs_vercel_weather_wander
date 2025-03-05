@@ -96,9 +96,10 @@ export default function WeatherPage() {
 }
 
 const getWeatherIcon = (description: string) => {
-  if (description.includes("晴れ")) return "☀️";
+  if (description.includes("晴")) return "☀️";
   if (description.includes("雨")) return "🌧";
   if (description.includes("曇")) return "☁️";
+  if (description.includes("雲")) return "☁️";
   if (description.includes("雪")) return "⛄️";
   return "🌍";
 };
